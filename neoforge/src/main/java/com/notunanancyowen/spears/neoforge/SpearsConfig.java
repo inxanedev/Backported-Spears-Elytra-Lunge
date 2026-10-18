@@ -22,6 +22,14 @@ public class SpearsConfig {
             .comment("Whether tridents attack like spears")
             .define("tridents_use_spear_attack_animation", true);
 
+    private static final ModConfigSpec.BooleanValue RESTRICT_LUNGE_WHILE_ELYTRA_FLYING = BUILDER
+            .comment("Whether Lunge is disabled while gliding with an elytra")
+            .define("restrict_lunge_while_elytra_flying", false);
+
+    private static final ModConfigSpec.DoubleValue LUNGE_EXHAUSTION_PER_LEVEL = BUILDER
+            .comment("Exhaustion added per level of Lunge")
+            .defineInRange("lunge_exhaustion_per_level", 4.0, 0.0, 20.0);
+
     static final ModConfigSpec SPEC = BUILDER.build();
 
     @SubscribeEvent
@@ -30,5 +38,7 @@ public class SpearsConfig {
         Spears.config.put("spear_charge_attacks", SPEAR_CHARGE_ATTACKS.getAsBoolean());
         Spears.config.put("spear_stabbing_animation", SPEAR_STABBING_ANIMATION.getAsBoolean());
         Spears.config.put("tridents_use_spear_attack_animation", TRIDENTS_USE_SPEAR_ATTACK_ANIMATION.getAsBoolean());
+        Spears.restrictLungeWhileElytraFlying = RESTRICT_LUNGE_WHILE_ELYTRA_FLYING.getAsBoolean();
+        Spears.lungeExhaustionPerLevel = LUNGE_EXHAUSTION_PER_LEVEL.get().floatValue();
     }
 }

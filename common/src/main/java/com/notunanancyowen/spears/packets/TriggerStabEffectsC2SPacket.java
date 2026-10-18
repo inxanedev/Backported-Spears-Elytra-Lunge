@@ -34,7 +34,7 @@ public record TriggerStabEffectsC2SPacket(boolean toggle) implements CustomPaylo
     public void trigger(ServerPlayerEntity me) {
         Hand hand = me.preferredHand == null ? Hand.MAIN_HAND : me.preferredHand;
         ItemStack stack = me.getStackInHand(hand);
-        if (!stack.isEmpty() && me.getWorld() instanceof ServerWorld server) {
+        if (Spears.canApplyLungeEffects(me) && !stack.isEmpty() && me.getWorld() instanceof ServerWorld server) {
             ItemEnchantmentsComponent itemEnchantmentsComponent = stack.get(DataComponentTypes.ENCHANTMENTS);
             if (itemEnchantmentsComponent != null && !itemEnchantmentsComponent.isEmpty()) {
                 EnchantmentEffectContext enchantmentEffectContext = new EnchantmentEffectContext(stack, hand == Hand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND, me);

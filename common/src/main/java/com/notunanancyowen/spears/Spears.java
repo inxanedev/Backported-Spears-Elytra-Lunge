@@ -273,6 +273,11 @@ public final class Spears {
         return config;
     }
     public static HashMap<String, Boolean> config;
+    public static boolean restrictLungeWhileElytraFlying = false;
+    public static float lungeExhaustionPerLevel = 4.0F;
+    public static boolean canApplyLungeEffects(Entity entity) {
+        return !restrictLungeWhileElytraFlying || !(entity instanceof LivingEntity livingEntity) || !livingEntity.isFallFlying();
+    }
     public static boolean hasBetterCombat = false;
     public static void init() {
         // Write common init code here.

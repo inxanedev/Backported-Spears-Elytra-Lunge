@@ -14,12 +14,7 @@
               "amount": 1.0
             },
             {
-              "type": "minecraft:apply_exhaustion",
-              "amount": {
-                "type": "minecraft:linear",
-                "base": 4.0,
-                "per_level_above_first": 4.0
-              }
+              "type": "spears:lunge_exhaustion"
             },
             {
               "type": "minecraft:apply_impulse",

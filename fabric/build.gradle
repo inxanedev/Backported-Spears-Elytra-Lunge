@@ -7,6 +7,13 @@ architectury {
     fabric()
 }
 
+repositories {
+    maven {
+        name = 'TerraformersMC'
+        url = 'https://maven.terraformersmc.com/releases/'
+    }
+}
+
 configurations {
     common {
         canBeResolved = true
@@ -29,6 +36,9 @@ dependencies {
 
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation "net.fabricmc.fabric-api:fabric-api:$rootProject.fabric_api_version"
+
+    // Optional Mod Menu integration for the in-game config screen.
+    modCompileOnly "com.terraformersmc:modmenu:11.0.5"
 
     common(project(path: ':common', configuration: 'namedElements')) { transitive = false }
     shadowBundle project(path: ':common', configuration: 'transformProductionFabric')

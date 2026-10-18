@@ -16,5 +16,12 @@
   "enchantment.minecraft.lunge": "Lunge",
   "enchantment.minecraft.lunge.desc": "Spears will propel you forward when used",
   "advancements.adventure.spear_many_mobs.description": "Hit five mobs in the same Charge attack using the Spear",
-  "advancements.adventure.spear_many_mobs.title": "Mob Kabob"
+  "advancements.adventure.spear_many_mobs.title": "Mob Kabob",
+  "spears.config.title": "Backported Spears Settings",
+  "spears.config.restrict_elytra_lunge": "Restrict Lunge while elytra flying: %s",
+  "spears.config.lunge_exhaustion": "Lunge exhaustion per level: %s",
+  "spears.config.on": "ON",
+  "spears.config.off": "OFF",
+  "spears.config.save": "Save",
+  "spears.config.cancel": "Cancel"
 }

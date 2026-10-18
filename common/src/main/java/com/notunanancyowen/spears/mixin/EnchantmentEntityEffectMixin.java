@@ -1,10 +1,13 @@
 package com.notunanancyowen.spears.mixin;
 
 import com.mojang.serialization.MapCodec;
+import com.notunanancyowen.spears.Spears;
 import com.notunanancyowen.spears.enchantmentfx.ApplyExhaustion;
 import com.notunanancyowen.spears.enchantmentfx.ApplyImpulse;
+import com.notunanancyowen.spears.enchantmentfx.LungeExhaustion;
 import net.minecraft.enchantment.effect.EnchantmentEntityEffect;
 import net.minecraft.registry.Registry;
+import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -16,5 +19,6 @@ public interface EnchantmentEntityEffectMixin {
     private static void registerApplyImpulseAndExhaust(Registry<MapCodec<? extends EnchantmentEntityEffect>> registry, CallbackInfoReturnable<MapCodec<? extends EnchantmentEntityEffect>> cir) {
         Registry.register(registry, "apply_impulse", ApplyImpulse.CODEC);
         Registry.register(registry, "apply_exhaustion", ApplyExhaustion.CODEC);
+        Registry.register(registry, Identifier.of(Spears.MOD_ID, "lunge_exhaustion"), LungeExhaustion.CODEC);
     }
 }

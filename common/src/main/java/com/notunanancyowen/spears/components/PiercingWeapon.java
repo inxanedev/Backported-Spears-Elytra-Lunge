@@ -84,7 +84,7 @@ public record PiercingWeapon(
         }
         if(attacker instanceof SpearUser s) for (EntityHitResult entityHitResult : Spears.collectPiercingCollisions(attacker, minReach, maxReach, this.hitboxMargin, entity -> canHit(attacker, entity))) bl |= s.pierce(slot, entityHitResult.getEntity(), f, true, this.dealsKnockback, this.dismounts);
         ItemStack stack = attacker.getEquippedStack(slot);
-        if (!stack.isEmpty() && attacker.getWorld() instanceof ServerWorld server) {
+        if (Spears.canApplyLungeEffects(attacker) && !stack.isEmpty() && attacker.getWorld() instanceof ServerWorld server) {
             ItemEnchantmentsComponent itemEnchantmentsComponent = stack.get(DataComponentTypes.ENCHANTMENTS);
             if (itemEnchantmentsComponent != null && !itemEnchantmentsComponent.isEmpty()) {
                 EnchantmentEffectContext enchantmentEffectContext = new EnchantmentEffectContext(stack, slot, attacker);

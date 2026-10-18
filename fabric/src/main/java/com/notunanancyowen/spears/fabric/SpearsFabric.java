@@ -27,41 +27,80 @@ import net.minecraft.loot.context.LootContextTypes;
 import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.util.math.MathHelper;
 
 import java.io.*;
 import java.util.HashMap;
 import java.util.Optional;
 
 public final class SpearsFabric implements ModInitializer {
-    private static HashMap<String, Boolean> makeConfig() {
+    private static final String DEFAULT_CONFIG = """
+            #Whether spears have a charge attack
+            spear_charge_attacks = true
+            #Whether spears have a stabbing animation
+            spear_stabbing_animation = true
+            #Whether tridents attack like spears
+            tridents_use_spear_attack_animation = false
+            #Whether Lunge is disabled while gliding with an elytra
+            restrict_lunge_while_elytra_flying = false
+            #Exhaustion added per level of Lunge
+            lunge_exhaustion_per_level = 4.0
+            """;
+    private static File configFile() {
+        return FabricLoader.getInstance().getConfigDir().resolve(Spears.MOD_ID + "-common.toml").toFile();
+    }
+    public static HashMap<String, Boolean> makeConfig() {
         HashMap<String, Boolean> toggles = Spears.makeConfig();
+        Spears.restrictLungeWhileElytraFlying = false;
+        Spears.lungeExhaustionPerLevel = 4.0F;
         try {
-            File config = FabricLoader.getInstance().getConfigDir().resolve(Spears.MOD_ID + "-common.toml").toFile();
+            File config = configFile();
             if(config.createNewFile()) try(FileWriter configWriter = new FileWriter(config)) {
-                configWriter.write("#Whether spears have a charge attack\nspear_charge_attacks = true\n#Whether spears have a stabbing animation\nspear_stabbing_animation = true\n#Whether tridents attack like spears\ntridents_use_spear_attack_animation = false");
+                configWriter.write(DEFAULT_CONFIG);
             }
-            try(FileReader configReader = new FileReader(config)) {
-                BufferedReader reader = new BufferedReader(configReader);
-                StringBuilder bob = new StringBuilder();
+            try(BufferedReader reader = new BufferedReader(new FileReader(config))) {
                 String configText;
                 while((configText = reader.readLine()) != null) {
-                    bob.append(configText);
-                    bob.append(System.lineSeparator());
-                }
-                bob.deleteCharAt(bob.length() - 1);
-                reader.close();
-                bob.toString().lines().forEach(configContent -> {
-                    if(!configContent.startsWith("#")) {
-                        String[] configValues = configContent.replace(" ", "").split("=", 2);
-                        toggles.putIfAbsent(configValues[0], configValues[1].contains("true"));
+                    configText = configText.trim();
+                    if(configText.isEmpty() || configText.startsWith("#")) continue;
+                    String[] configValues = configText.split("=", 2);
+                    if(configValues.length != 2) continue;
+                    String key = configValues[0].trim();
+                    String value = configValues[1].trim();
+                    if(key.equals("restrict_lunge_while_elytra_flying")) {
+                        Spears.restrictLungeWhileElytraFlying = Boolean.parseBoolean(value);
+                    } else if(key.equals("lunge_exhaustion_per_level")) {
+                        try {
+                            Spears.lungeExhaustionPerLevel = MathHelper.clamp(Float.parseFloat(value), 0.0F, 20.0F);
+                        } catch(NumberFormatException ignored) {
+                        }
+                    } else {
+                        toggles.putIfAbsent(key, value.contains("true"));
                     }
-                });
+                }
             }
         }
         catch (IOException | SecurityException e) {
             Spears.LOGGER.info("Error making config: %n" + e.getLocalizedMessage());
         }
         return toggles;
+    }
+    public static void saveConfig() {
+        try(FileWriter configWriter = new FileWriter(configFile())) {
+            configWriter.write("#Whether spears have a charge attack\n");
+            configWriter.write("spear_charge_attacks = " + Spears.makeConfig().getOrDefault("spear_charge_attacks", true) + "\n");
+            configWriter.write("#Whether spears have a stabbing animation\n");
+            configWriter.write("spear_stabbing_animation = " + Spears.makeConfig().getOrDefault("spear_stabbing_animation", true) + "\n");
+            configWriter.write("#Whether tridents attack like spears\n");
+            configWriter.write("tridents_use_spear_attack_animation = " + Spears.makeConfig().getOrDefault("tridents_use_spear_attack_animation", false) + "\n");
+            configWriter.write("#Whether Lunge is disabled while gliding with an elytra\n");
+            configWriter.write("restrict_lunge_while_elytra_flying = " + Spears.restrictLungeWhileElytraFlying + "\n");
+            configWriter.write("#Exhaustion added per level of Lunge\n");
+            configWriter.write("lunge_exhaustion_per_level = " + Spears.lungeExhaustionPerLevel + "\n");
+        }
+        catch (IOException | SecurityException e) {
+            Spears.LOGGER.info("Error saving config: %n" + e.getLocalizedMessage());
+        }
     }
     @Override public void onInitialize() {
         Spears.config = makeConfig();
